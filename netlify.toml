@@ -14,3 +14,4 @@
   from = "/*"
   to = "/.netlify/functions-internal/server"
   status = 200
+  force = true
