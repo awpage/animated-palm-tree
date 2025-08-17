@@ -6,9 +6,6 @@ export default defineNuxtConfig({
   ssr: true,
   nitro: {
     preset: "netlify-edge",
-    prerender: {
-      routes: ["/"],
-    },
   },
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
