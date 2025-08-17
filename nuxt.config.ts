@@ -5,15 +5,14 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
   ssr: true,
   nitro: {
-    preset: "netlify",
+    preset: 'netlify',
     experimental: {
-      wasm: false,
+      wasm: false
     },
-    // Force include Prisma client
+    // Remove the plugins line - this was causing the error
     externals: {
-      inline: ["@prisma/client"],
-    },
-    plugins: ["~/plugins/prisma.ts"],
+      inline: ['@prisma/client']
+    }
   },
   build: {
     transpile: ["@prisma/client"],
