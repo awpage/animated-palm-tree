@@ -1,9 +1,13 @@
 [build]
-  command = "prisma generate && npm run build"
+  command = "pnpm install && prisma generate && pnpm run build"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "22.13.0"
+
+[functions]
+  external_node_modules = ["@prisma/client", "prisma"]
+  node_bundler = "esbuild"
 
 [[redirects]]
   from = "/*"

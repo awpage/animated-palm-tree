@@ -19,6 +19,9 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()]
   },
   css: ["~/assets/css/main.css"],
+  build: {
+    transpile: ['@prisma/client']
+  },
 
   modules: [
     '@nuxt/eslint',

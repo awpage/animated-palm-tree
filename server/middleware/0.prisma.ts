@@ -1,15 +1,19 @@
-import { PrismaClient } from "@prisma/client"
+// lib/prisma.ts or utils/prisma.ts
+import { PrismaClient } from "@prisma/client";
 
-let prisma: PrismaClient;
-declare module "h3" {
-  interface H3EventContext {
-    prisma: PrismaClient;
-  }
+declare global {
+  var __prisma: PrismaClient | undefined;
 }
 
-export default eventHandler(async (event) => {
-  if (!prisma) {
-    prisma = new PrismaClient();
+let prisma: PrismaClient;
+
+if (process.env.NODE_ENV === "production") {
+  prisma = new PrismaClient();
+} else {
+  if (!global.__prisma) {
+    global.__prisma = new PrismaClient();
   }
-  event.context.prisma = prisma;
-});
+  prisma = global.__prisma;
+}
+
+export default prisma;
