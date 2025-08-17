@@ -1,5 +1,6 @@
-// lib/prisma.ts or utils/prisma.ts
 import { PrismaClient } from "@prisma/client";
+
+console.log(PrismaClient)
 
 declare global {
   var __prisma: PrismaClient | undefined;
