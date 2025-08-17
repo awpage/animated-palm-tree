@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import notify from '~/components/notify'
+
 const pinError = ref(false)
 const err = ref<string | undefined>(undefined)
 const loading = ref(false)
@@ -26,7 +28,7 @@ async function submitForm() {
 
     // Get new pin for another entry
     await getPin()
-    console.log("Content added and pin copied to clipboard")
+    notify.show({ type: "success", message: "Content added and pin copied to clipboard" })
   } catch (error: any | { message: string }) {
     console.error(error.message)
     err.value = error.message.split(":")[1] ?? "An error occurred while saving your content, please try again."
@@ -38,7 +40,10 @@ async function submitForm() {
 async function copyToClipboard(showMessage = true) {
   try {
     await navigator.clipboard.writeText(form.id)
-    console.log("Copied")
+
+    if (showMessage) {
+      notify.show({ type: "success", message: "Code copied to your clipboard" })
+    }
   } catch (error) {
     console.error(error)
     err.value = "An error occurred while copying the shareable code."
