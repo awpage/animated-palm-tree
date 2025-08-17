@@ -6,17 +6,17 @@ export default defineNuxtConfig({
   ssr: true,
   nitro: {
     preset: 'netlify',
-    experimental: {
-      wasm: false
-    },
-    // Remove the plugins line - this was causing the error
-    externals: {
-      inline: ['@prisma/client']
-    }
+    // experimental: {
+    //   wasm: false
+    // },
+    // // Remove the plugins line - this was causing the error
+    // externals: {
+    //   inline: ['@prisma/client']
+    // }
   },
-  build: {
-    transpile: ["@prisma/client"],
-  },
+  // build: {
+  //   transpile: ["@prisma/client"],
+  // },
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
 
