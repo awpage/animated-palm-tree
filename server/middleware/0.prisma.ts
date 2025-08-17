@@ -1,6 +1,4 @@
-// import { PrismaClient } from "../../generated/prisma/index";
-
-import { PrismaClient } from "~~/generated/prisma";
+import { PrismaClient } from "@prisma/client"
 
 let prisma: PrismaClient;
 declare module "h3" {
