@@ -1,32 +1,79 @@
 <script lang="ts" setup>
 const pinError = ref(false)
+const err = ref<string | undefined>(undefined)
+const loading = ref(false)
 const form = reactive({
   content: "",
   id: "",
   deleteOnSeen: false
 })
 
-function submitForm() {
-  console.log("Form")
+async function submitForm() {
+  err.value = undefined
+  if (form.content.length === 0) {
+    err.value = "Please add a content."
+    return
+  }
+
+  loading.value = true
+  try {
+    await $fetch("/api/add-entry", { method: "post", body: JSON.stringify(form) })
+    await copyToClipboard(false)
+
+    form.content = ""
+    form.id = ""
+    form.deleteOnSeen = false
+
+    // Get new pin for another entry
+    await getPin()
+    console.log("Content added and pin copied to clipboard")
+  } catch (error: any | { message: string }) {
+    console.error(error.message)
+    err.value = error.message.split(":")[1] ?? "An error occurred while saving your content, please try again."
+  } finally {
+    loading.value = false
+  }
 }
 
-function copyToClipboard() { }
+async function copyToClipboard(showMessage = true) {
+  try {
+    await navigator.clipboard.writeText(form.id)
+    console.log("Copied")
+  } catch (error) {
+    console.error(error)
+    err.value = "An error occurred while copying the shareable code."
+  }
+}
 
-function getPin() {}
+async function getPin() {
+  pinError.value = false
+  err.value = undefined
+  try {
+    const { pin } = await $fetch("/api/pin")
+
+    form.id = pin!
+  } catch (error) {
+    console.log(error)
+    pinError.value = true
+    err.value = "Error generating sharable pin, please refresh pin"
+  }
+}
+
+getPin()
 </script>
 
 <template>
   <section class="p-5 flex flex-col gap-5" aria-labelledby="page-title">
-    <h1 id="page-title" class="text-4xl lg:text-8xl text-black tracking-tighter text-balance">
-      <span class="text-slate-400">Copy, </span>Paste & Share
-    </h1>
-
-    <form @submit.prevent="submitForm" class="grid gap-5 lg:grid-cols-3 lg:h-[80vh]" aria-describedby="form-desc">
-      <div class="h-[60vh] lg:col-span-2 lg:h-full flex flex-col">
+    <form @submit.prevent="submitForm" class="grid gap-5 lg:grid-cols-3 lg:h-[78vh]" aria-describedby="form-desc">
+      <div class="h-[60vh] lg:col-span-2 lg:h-full flex flex-col gap-5">
+        <div v-if="err" class="border border-red-500 outline-red-500 ring ring-red-500 text-red-500 p-5"
+          aria-describedby="form-errors" role="alert" aria-live="assertive" id="form-errors">
+          {{ err }}
+        </div>
         <label for="content" class="sr-only">Paste your content here</label>
         <textarea id="content" v-model="form.content"
-          class="h-full border border-slate-400 ring ring-slate-400 outline outline-slate-400 focus:ring-black focus:outline-black focus:border-black p-5 font-sans"
-          placeholder="Paste your content here" aria-describedby="form-desc" required></textarea>
+          class="h-full resize-none bg-transparent border border-slate-400 ring ring-slate-400 outline outline-slate-400 focus:ring-black focus:outline-black focus:border-black p-5 font-sans"
+          placeholder="Paste your content here" aria-describedby="form-desc" requir></textarea>
       </div>
 
       <div class="flex flex-col gap-5">
@@ -61,7 +108,7 @@ function getPin() {}
         <div class="border ring outline border-black outline-black ring-black w-full p-3 flex items-center gap-5">
           <label for="copy-id" class="sr-only">Your unique paste ID</label>
           <input id="copy-id" type="text" v-model="form.id" readonly placeholder="Getting your code..."
-            class="w-full outline-none border-none ring-none bg-transparent" />
+            class="w-full outline-none border-none ring-none bg-transparent uppercase tracking-[.3rem] font-black text-2xl" />
 
           <button v-if="pinError" type="button" @click="getPin()" class="cursor-pointer transform active:scale-95"
             aria-label="Reload paste ID">
@@ -81,9 +128,9 @@ function getPin() {}
             </svg>
           </button>
         </div>
-        <button type="submit" class="bg-black text-white w-full p-5 cursor-pointer transform active:scale-95"
-          aria-label="Save your paste">
-          Save
+        <button type="submit" class="bg-black text-white w-full p-5 cursor-pointer transform active:scale-95 disabled:cursor-not-allowed disabled:bg-gray-700"
+          aria-label="Save your paste" :disabled="loading">
+          {{ loading ? "Saving..." : "Save" }}
         </button>
       </div>
     </form>
