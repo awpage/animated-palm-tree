@@ -6,12 +6,12 @@
   NODE_VERSION = "22.13.0"
 
 [functions]
-   directory = ".netlify/functions-internal"
+   directory = ".netlify/edge-functions/"
   external_node_modules = ["@prisma/client", "prisma"]
   node_bundler = "esbuild"
 
 [[redirects]]
   from = "/*"
-  to = "/.netlify/functions-internal/server"
+  to = "/.netlify/edge-functions/server"
   status = 200
   force = true
