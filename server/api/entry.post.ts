@@ -1,3 +1,5 @@
+import { encrypt } from "../utils/helpers"
+
 export default eventHandler(async (event) => {
   const { prisma } = event.context
   const body = await readBody(event) as { content: string, id: string, deleteOnSeen: boolean }
@@ -6,7 +8,10 @@ export default eventHandler(async (event) => {
     const isPinAvailable = await checkIfPinIsAvailable(body.id, prisma)
     if (isPinAvailable) {
       await prisma.entries.create({
-        data: body
+        data: {
+          ...body,
+          content: encrypt(body.content)
+        }
       })
     } else {
       return HttpErrors.CONFLICT({ message: "Pin already in use, please generate another." })

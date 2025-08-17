@@ -19,7 +19,7 @@ async function submitForm() {
 
   loading.value = true
   try {
-    await $fetch("/api/add-entry", { method: "post", body: JSON.stringify(form) })
+    await $fetch("/api/entry", { method: "post", body: JSON.stringify(form) })
     await copyToClipboard(false)
 
     form.content = ""

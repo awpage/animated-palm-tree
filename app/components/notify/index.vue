@@ -8,6 +8,12 @@ function dismiss() {
   isVisible.value = false
   emit("close")
 }
+
+onMounted(() => {
+  setTimeout(() => {
+    isVisible.value = false
+  }, 3000)
+})
 </script>
 
 <template>
