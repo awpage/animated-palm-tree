@@ -6,9 +6,7 @@
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "prisma generate",
-    "prebuild": "prisma generate"
+    "preview": "nuxt preview"
   },
   "dependencies": {
     "@nuxt/eslint": "1.8.0",
