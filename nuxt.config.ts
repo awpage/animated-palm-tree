@@ -5,28 +5,35 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
   ssr: true,
   nitro: {
-    preset: 'netlify'
+    preset: "netlify",
+    experimental: {
+      wasm: false,
+    },
+    // Force include Prisma client
+    externals: {
+      inline: ["@prisma/client"],
+    },
+    plugins: ["~/plugins/prisma.ts"],
   },
-  compatibilityDate: '2025-07-15',
+  build: {
+    transpile: ["@prisma/client"],
+  },
+  compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
 
   fonts: {
-    families: [{
-      name: "", provider: "google", global: true
-    }]
+    families: [
+      {
+        name: "",
+        provider: "google",
+        global: true,
+      },
+    ],
   },
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [tailwindcss()],
   },
   css: ["~/assets/css/main.css"],
-  build: {
-    transpile: ['@prisma/client']
-  },
 
-  modules: [
-    '@nuxt/eslint',
-    '@nuxt/fonts',
-    '@nuxt/icon',
-    '@nuxt/image'
-  ]
-})
+  modules: ["@nuxt/eslint", "@nuxt/fonts", "@nuxt/icon", "@nuxt/image"],
+});
