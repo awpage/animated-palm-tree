@@ -24,3 +24,6 @@ logs
 !.env.example
 
 /generated/prisma
+
+# Local Netlify folder
+.netlify
