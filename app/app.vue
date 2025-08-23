@@ -79,14 +79,13 @@ useHead({
 <template>
   <section class="min-h-screen bg-slate-50" aria-labelledby="page-title">
     <nav v-if="!isHome" id="page-title"
-      class="p-5 flex gap-2 justify-between text-3xl lg:text-8xl text-slate-400 tracking-tighter text-balance">
+      class="p-5 flex justify-between font-semibold text-3xl lg:text-8xl text-slate-400 tracking-tighter text-balance">
       <div class="flex gap-2">
         <nuxt-link to="/">Help,&nbsp;</nuxt-link>
         <nuxt-link to="/copy" active-class="text-black">Copy</nuxt-link>
-        <span class="text-black">,</span>
+        <span class="text-black -mx-1">,</span>
         <nuxt-link to="/paste" active-class="text-black">Paste & Share</nuxt-link>
       </div>
-      <div />
     </nav>
     <NuxtPage class="h-full" />
   </section>
