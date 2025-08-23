@@ -39,7 +39,7 @@ async function submitForm() {
 
 async function copyToClipboard(showMessage = true) {
   try {
-    await navigator.clipboard.writeText(form.id)
+    await navigator.clipboard.writeText(`Hey, I sent you something. See it here \nhttps://ctrlcv.website/copy and use this code *${form.id}*`)
 
     if (showMessage) {
       notify.show({ type: "success", message: "Code copied to your clipboard" })
@@ -65,6 +65,15 @@ async function getPin() {
 }
 
 getPin()
+
+
+useHead({
+  title: "Paste and Share",
+  meta: [{
+    content: "Paste your content and get a shareable code to protect your secret. Items are encryoted and except you share the code, it is locked FOREVER.",
+    name: "description"
+  }]
+})
 </script>
 
 <template>

@@ -46,6 +46,14 @@ async function submitPin() {
     loading.value = false
   }
 }
+
+useHead({
+  title: "Copy",
+  meta: [{
+    content: "Get the textual content from where ever you want, copied to your system's clipboard.",
+    name: "description"
+  }]
+})
 </script>
 
 <template>

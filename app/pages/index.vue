@@ -23,7 +23,11 @@ onMounted(() => {
 })
 
 useHead({
-  title: "Ctrl+CV"
+  title: "Ctrl+CV",
+  meta: [{
+    content: "Paste your content and get a shareable code to protect your secret. Items are encryoted and except you share the code, it is locked FOREVER.",
+    name: "description"
+  }]
 })
 
 </script>
@@ -32,7 +36,7 @@ useHead({
     <div class="">
       <div class="flex gap-5 items-center justify-between">
         <h1 class="text-3xl lg:text-8xl text-black tracking-tighter text-balance">
-          How To Copy, Paste and Share!
+          Copy, Paste and Share!
         </h1>
 
         <nuxt-link to="/paste"
