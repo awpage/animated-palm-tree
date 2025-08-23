@@ -4,7 +4,7 @@ const route = useRoute()
 const isHome = computed(() => route.path === "/")
 let script: any = []
 
-if (import.meta.env.VITE_PROD) {
+// if (import.meta.env.VITE_PROD) {
   script = [
     {
       src: `https://www.googletagmanager.com/gtag/js?id=${import.meta.env.VITE_PUBLIC_GTAG_ID}`,
@@ -21,8 +21,23 @@ if (import.meta.env.VITE_PROD) {
     }
   ]
 
-  useHead({ script })
-}
+  useHead({
+    script: [
+      {
+        src: `https://www.googletagmanager.com/gtag/js?id=${import.meta.env.VITE_PUBLIC_GTAG_ID}`,
+        async: true
+      },
+      {
+        type: 'text/javascript',
+        innerHTML: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '${import.meta.env.VITE_PUBLIC_GTAG_ID}';
+        `
+      }
+  ] })
+// }
 
 useHead({
   titleTemplate: " %s | Copy, Paste and Share with the world",
