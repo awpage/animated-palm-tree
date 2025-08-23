@@ -1,4 +1,4 @@
-export default eventHandler(async (event) => {
+export default defineEventHandler(async (event) => {
   const { prisma } = event.context;
   const { pin } = getQuery(event);
 
@@ -9,7 +9,7 @@ export default eventHandler(async (event) => {
       },
     });
 
-    return { message: "content deleted!" }
+    return { message: "content deleted!" };
   } catch (error) {
     throw HttpErrors.SERVER({ message: "An error occurred", error });
   }
