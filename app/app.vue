@@ -4,7 +4,7 @@ const route = useRoute()
 const isHome = computed(() => route.path === "/")
 let script: any = []
 
-if (import.meta.client && import.meta.env.PROD) {
+if (import.meta.env.PROD) {
   script = [
     {
       src: `https://www.googletagmanager.com/gtag/js?id=${import.meta.env.VITE_PUBLIC_GTAG_ID}`,
@@ -16,14 +16,12 @@ if (import.meta.client && import.meta.env.PROD) {
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', '${import.meta.env.VITE_PUBLIC_GTAG_ID}', { page_path: '${window.location.pathname}' });
+          gtag('config', '${import.meta.env.VITE_PUBLIC_GTAG_ID}';
         `
     }
   ]
 
-  useHead({
-    script
-  })
+  useHead({ script })
 }
 
 useHead({
@@ -46,8 +44,7 @@ useHead({
       sizes: "192x192",
       href: "https://res.cloudinary.com/dzhxwku5k/image/upload/v1755942242/android-chrome-192x192_kpqllg.png"
     }
-  ],
-  script
+  ]
 })
 </script>
 
