@@ -2,6 +2,53 @@
 const route = useRoute()
 
 const isHome = computed(() => route.path === "/")
+let script: any = []
+
+if (import.meta.client && import.meta.env.PROD) {
+  script = [
+    {
+      src: `https://www.googletagmanager.com/gtag/js?id=${import.meta.env.VITE_PUBLIC_GTAG_ID}`,
+      async: true
+    },
+    {
+      type: 'text/javascript',
+      children: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '${import.meta.env.VITE_PUBLIC_GTAG_ID}', { page_path: '${window.location.pathname}' });
+        `
+    }
+  ]
+
+  useHead({
+    script
+  })
+}
+
+useHead({
+  titleTemplate: " %s | Copy, Paste and Share with the world",
+  link: [
+    {
+      rel: "icon",
+      type: "image/vnd.microsoft.icon",
+      href: "https://res.cloudinary.com/dzhxwku5k/image/upload/v1755942251/favicon_ob7dis.ico"
+    },
+    {
+      rel: "icon",
+      type: "image/png",
+      sizes: "32x32",
+      href: "https://res.cloudinary.com/dzhxwku5k/image/upload/v1755942249/favicon-32x32_umddv2.png"
+    },
+    {
+      rel: "icon",
+      type: "image/png",
+      sizes: "192x192",
+      href: "https://res.cloudinary.com/dzhxwku5k/image/upload/v1755942242/android-chrome-192x192_kpqllg.png"
+    }
+  ],
+  script
+})
 </script>
 
 <template>

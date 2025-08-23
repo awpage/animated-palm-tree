@@ -22,6 +22,10 @@ onMounted(() => {
   }
 })
 
+useHead({
+  title: "Ctrl+CV"
+})
+
 </script>
 <template>
   <section class="bg-slate-50 h-screen flex flex-col justify-between p-5">
