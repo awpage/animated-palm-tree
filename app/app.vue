@@ -82,7 +82,7 @@ useHead({
       class="p-5 flex justify-between font-semibold text-3xl lg:text-8xl text-slate-400 tracking-tighter text-balance">
       <div class="flex gap-2">
         <nuxt-link to="/">Help,&nbsp;</nuxt-link>
-        <nuxt-link to="/copy" active-class="text-black">Copy</nuxt-link>
+        <nuxt-link to="/copy" active-class="text-black" :class="{ 'text-black': $route.name === 'c-pin' }">Copy</nuxt-link>
         <span class="text-black -mx-1">,</span>
         <nuxt-link to="/paste" active-class="text-black">Paste & Share</nuxt-link>
       </div>

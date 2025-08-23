@@ -40,7 +40,7 @@ async function submitForm() {
 
 async function copyToClipboard(showMessage = true) {
   try {
-    await navigator.clipboard.writeText(`Hey, I sent you something. See it here \nhttps://ctrlcv.website/copy and use this code *${form.id}*`)
+    await navigator.clipboard.writeText(`Hey, I sent you something. See it here \nhttps://ctrlcv.website/c/${form.id}`)
 
     if (showMessage) {
       notify.show({ type: "success", message: "Code copied to your clipboard" })
@@ -56,12 +56,12 @@ async function shareId() {
     if (navigator.share) {
       navigator.share({
         title: 'Hey, I sent you something.',
-        text: `See it here use this code *${form.id}*`,
-        url: "https://ctrlcv.website/copy",
+        text: `See it here:\n`,
+        url: `https://ctrlcv.website/c/${form.id}`,
       })
     }
 
-    notify.show({ type: "error", message: "Cannot share "})
+    notify.show({ type: "error", message: "Cannot share " })
   } catch (error) {
     console.error(error)
     err.value = "Your device does not support sharing"
@@ -155,8 +155,8 @@ useHead({
               </g>
             </svg>
           </button>
-          <button v-else-if="isMobile" type="button" @click="shareId()"
-            class="cursor-pointer transform active:scale-95" aria-label="Share paste ID">
+          <button v-else-if="isMobile" type="button" @click="shareId()" class="cursor-pointer transform active:scale-95"
+            aria-label="Share paste ID">
             <svg class="w-10" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg"
               xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000">
               <g id="SVGRepo_bgCarrier" stroke-width="0"></g>

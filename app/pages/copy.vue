@@ -3,6 +3,8 @@ import notify from '~/components/notify'
 
 const route = useRoute()
 
+const { title } = defineProps(["title"])
+
 const loading = ref(false)
 const pin = ref(route.params.pin ?? "")
 
@@ -48,7 +50,7 @@ async function submitPin() {
 }
 
 useHead({
-  title: "Copy",
+  title: title ?? "Copy",
   meta: [{
     content: "Get the textual content from where ever you want, copied to your system's clipboard.",
     name: "description"
