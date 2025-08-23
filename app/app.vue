@@ -4,7 +4,7 @@ const route = useRoute()
 const isHome = computed(() => route.path === "/")
 let script: any = []
 
-if (import.meta.env.PROD) {
+if (import.meta.env.VITE_PROD) {
   script = [
     {
       src: `https://www.googletagmanager.com/gtag/js?id=${import.meta.env.VITE_PUBLIC_GTAG_ID}`,
