@@ -41,8 +41,6 @@ async function submitPin() {
       window.history.pushState({}, '', `/copy/${pin.value}`)
     }
   } catch (error) {
-    console.error(error)
-
     notify.show({ type: "error", message: error.message.split(":")[1] ?? "An Error occurred, that's all we know" })
   } finally {
     loading.value = false

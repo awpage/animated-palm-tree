@@ -31,7 +31,6 @@ async function submitForm() {
     await getPin()
     notify.show({ type: "success", message: "Content added and pin copied to clipboard" })
   } catch (error: any | { message: string }) {
-    console.error(error.message)
     err.value = error.message.split(":")[1] ?? "An error occurred while saving your content, please try again."
   } finally {
     loading.value = false

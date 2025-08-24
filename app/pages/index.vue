@@ -3,14 +3,10 @@ const count = ref(0)
 
 const platform = ref({ isMac: false, isWindows: false })
 
-const { data, error } = await useAsyncData(() => $fetch("/api/count"))
+const { data } = await useAsyncData(() => $fetch("/api/count"))
 
 if (data.value) {
   count.value = data.value.count
-}
-
-if (error.value) {
-  console.error(error.value)
 }
 
 onMounted(() => {
@@ -55,7 +51,7 @@ useHead({
                 &nbsp;
                 <span class="opacity-75">{{ platform.isMac ? "[⌘+c]" : platform.isWindows ? "[Ctrl+c]" : "" }}</span>
               </div>
-              <p class="mt-3 opacity-75 font-[100]">
+              <p class="mt-3 opacity-85 font-[100]">
                 Get the textual content from where ever you want, copied to your system's clipboard.
               </p>
             </div>
@@ -68,7 +64,7 @@ useHead({
                 &nbsp;
                 <span class="opacity-75">{{ platform.isMac ? "[⌘+v]" : platform.isWindows ? "[Ctrl+v]" : "" }}</span>
               </div>
-              <p class="mt-3 opacity-75 font-[100]">
+              <p class="mt-3 opacity-85 font-[100]">
                 Paste your content and get a shareable code to protect your secret. Items are encryoted and except you
                 share the code, it is locked FOREVER.
               </p>
@@ -91,7 +87,7 @@ useHead({
       &copy; Booluw
 
       <a href="//beawesome.page" target="_blank"
-        class="cursor-pointer font-bold opacity-50 hover:opacity-100 ease-in-out lowercase">
+        class="cursor-pointer font-bold opacity-80 hover:opacity-100 ease-in-out lowercase">
         awwpa
       </a>
     </div>

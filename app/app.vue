@@ -2,10 +2,9 @@
 const route = useRoute()
 
 const isHome = computed(() => route.path === "/")
-let script: any = []
 
 if (import.meta.env.VITE_PROD) {
-  script = [
+  const script = [
     {
       src: `https://www.googletagmanager.com/gtag/js?id=${import.meta.env.VITE_PUBLIC_GTAG_ID}`,
       async: true
@@ -65,7 +64,8 @@ useHead({
     { property: 'og:title', content: 'Copy, Paste and Share with the world' },
     { property: 'og:description', content: 'Paste your content and get a shareable code to protect your secret. Items are encryoted and except you share the code, it is locked FOREVER.' },
     { property: 'og:type', content: 'website' },
-    { property: 'og:url', content: 'https://ctrlcv.website/' },
+    { property: 'og:url', content: 'https://ctrlcv.website' },
+    { property: 'og:site_name', content: 'Ctrl+CV' },
     { property: 'og:image', content: 'https://res.cloudinary.com/dzhxwku5k/image/upload/v1755948873/Group_3_z0tpfb.png' },
     { name: 'twitter:card', content: 'summary_large_image' },
     { name: 'twitter:title', content: 'Copy, Paste and Share with the world' },

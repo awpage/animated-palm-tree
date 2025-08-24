@@ -13,6 +13,13 @@ export default defineEventHandler(async (event) => {
       });
 
       if (content) {
+        await prisma.entries.update({
+          where: {
+            id: content.id,
+          },
+          data: { views: content?.views + 1 },
+        });
+
         return {
           content: {
             ...content,

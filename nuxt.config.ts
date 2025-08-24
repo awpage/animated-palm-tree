@@ -20,6 +20,25 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()],
   },
   css: ["~/assets/css/main.css"],
+  app: {
+    head: {
+      htmlAttrs: {
+        lang: "en",
+      },
+      script: [
+        {
+          type: "application/ld+json",
+          innerHTML: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "Ctrl+CV",
+            alternateName: "Ctrl CV",
+            url: "https://ctrlcv.website",
+          }),
+        },
+      ],
+    },
+  },
 
   modules: ["@nuxt/eslint", "@nuxt/fonts", "@nuxt/icon", "@nuxt/image"],
 });
