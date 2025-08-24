@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
     if (pin) {
       const content = await prisma.entries.findUnique({
         where: {
-          id: pin as string,
+          id: (pin as string).toLowerCase(),
         },
       });
 

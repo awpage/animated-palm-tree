@@ -39,7 +39,7 @@ async function submitForm() {
 
 async function copyToClipboard(showMessage = true) {
   try {
-    await navigator.clipboard.writeText(`Hey, I sent you something. See it here \nhttps://ctrlcv.website/c/${form.id}`)
+    await navigator.clipboard.writeText(`Hey, I sent you something. See it here \nhttps://ctrlcv.website/c/${form.id.toLowerCase()}`)
 
     if (showMessage) {
       notify.show({ type: "success", message: "Code copied to your clipboard" })
@@ -56,7 +56,7 @@ async function shareId() {
       navigator.share({
         title: 'Hey, I sent you something.',
         text: `See it here:\n`,
-        url: `https://ctrlcv.website/c/${form.id}`,
+        url: `https://ctrlcv.website/c/${form.id.toLowerCase()}`,
       })
     }
 

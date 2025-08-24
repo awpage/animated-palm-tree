@@ -6,12 +6,12 @@ const route = useRoute()
 const { title } = defineProps(["title"])
 
 const loading = ref(false)
-const pin = ref(route.params.pin ?? "")
+const pin = ref(route.params.pin as string ?? "")
 
 const content = ref(undefined)
 
 function handleInput(evt: InputEvent | any) {
-  pin.value = evt.target.value.slice(0, 7)
+  pin.value = evt.target.value.slice(0, 7).toLowerCase()
 }
 
 async function submitPin() {
@@ -20,7 +20,7 @@ async function submitPin() {
       await navigator.clipboard.writeText(content.value?.content)
 
       if (content.value?.deleteOnSeen) {
-        await $fetch(`/api/entry?pin=${pin.value}`, { method: "delete" })
+        await $fetch(`/api/entry?pin=${pin.value.toLowerCase()}`, { method: "delete" })
       }
 
       notify.show({ type: "success", message: "Content copied to your clipboard" })
@@ -64,9 +64,9 @@ useHead({
           <label for="copy-id" class="sr-only">Your unique paste ID</label>
           <input type="text" v-model="pin" max-length="7"
             class="w-full outline-none border-none ring-none bg-transparent uppercase tracking-[.3rem] font-black text-2xl"
-            @input="handleInput" placeholder="Password" required />
+            @input="handleInput" placeholder="Content Code" required />
         </div>
-        <small>[Password given to protect this content]</small>
+        <small>[Code given to protect this content]</small>
       </div>
 
       <button type="submit"
