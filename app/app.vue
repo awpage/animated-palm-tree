@@ -3,42 +3,6 @@ const route = useRoute()
 
 const isHome = computed(() => route.path === "/")
 
-if (import.meta.env.VITE_PROD) {
-  const script = [
-    {
-      src: `https://www.googletagmanager.com/gtag/js?id=${import.meta.env.VITE_PUBLIC_GTAG_ID}`,
-      async: true
-    },
-    {
-      type: 'text/javascript',
-      children: `
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', '${import.meta.env.VITE_PUBLIC_GTAG_ID}';
-        `
-    }
-  ]
-
-  useHead({
-    script: [
-      {
-        src: `https://www.googletagmanager.com/gtag/js?id=${import.meta.env.VITE_PUBLIC_GTAG_ID}`,
-        async: true
-      },
-      {
-        type: 'text/javascript',
-        innerHTML: `
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', '${import.meta.env.VITE_PUBLIC_GTAG_ID}';
-        `
-      }
-    ]
-  })
-}
-
 useHead({
   titleTemplate: " %s | Copy, Paste and Share with the world",
   link: [
