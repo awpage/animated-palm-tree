@@ -8,6 +8,8 @@ const { title } = defineProps(["title"])
 const loading = ref(false)
 const pin = ref(route.params.pin as string ?? "")
 
+const { gtag } = useGtag()
+
 const content = ref(undefined)
 
 function handleInput(evt: InputEvent | any) {
@@ -21,6 +23,8 @@ async function submitPin() {
 
       if (content.value?.deleteOnSeen) {
         await $fetch(`/api/entry?pin=${pin.value.toLowerCase()}`, { method: "delete" })
+
+        gtag("event", "is_deleted_on_seen")
       }
 
       notify.show({ type: "success", message: "Content copied to your clipboard" })
@@ -36,6 +40,11 @@ async function submitPin() {
   try {
     const { content: data } = await $fetch(`/api/entry?pin=${pin.value}`)
     content.value = data
+
+    gtag("event", "view_content", {
+      title,
+      url: route.name
+    })
 
     if (import.meta.client) {
       window.history.pushState({}, '', `/copy/${pin.value}`)
