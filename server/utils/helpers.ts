@@ -32,6 +32,24 @@ export const checkIfPinIsAvailable = async (
   }
 };
 
+export const checkIfDevicePinIsAvailable = async (
+  pin: string,
+  prisma: PrismaClient
+) => {
+  try {
+    const isAlreadyTaken = await prisma.devices.findUnique({
+      where: {
+        id: pin,
+      },
+    });
+
+    return !isAlreadyTaken;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+};
+
 export const encrypt = (content: string) => {
   const cipher = crypto.createCipheriv(algorithm, key, iv);
 

@@ -14,3 +14,21 @@ model Entries {
   views        Int     @default(0)
   entryVal     Int     @default(autoincrement())
 }
+
+model Devices {
+  id      String   @id @unique @default(uuid())
+  token   String   @unique
+  entries String[] @default([])
+
+  sentConnections     ConnectedDevices[] @relation("SenderDevices")
+  receivedConnections ConnectedDevices[] @relation("ReceiverDevices")
+}
+
+model ConnectedDevices {
+  id         String @id @unique @default(uuid())
+  receiverId String
+  senderId   String
+
+  sender   Devices @relation("SenderDevices", fields: [senderId], references: [id])
+  receiver Devices @relation("ReceiverDevices", fields: [receiverId], references: [id])
+}

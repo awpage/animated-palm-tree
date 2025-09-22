@@ -1,8 +1,16 @@
 <script lang="ts" setup>
+import useClientStorage from '~/composables/storage';
+
 const paste = reactive({
   device: null,
   content: ''
 })
+
+const selectRecipient = ref(false)
+
+const store = useClientStorage()
+
+const deviceId = computed(() => store?.deviceID.value)
 </script>
 <template>
   <ClientOnly>
@@ -36,9 +44,13 @@ const paste = reactive({
           </g>
         </svg>
       </div>
-      <div class="grid lg:grid-cols-2 gap-5">
-        <D2dSelectDevice v-model="paste.device" v-if="paste.device === null" />
-        <div class=""></div>
+
+      <div class="">
+        Device ID: <span class="uppercase">{{ deviceId }}</span>
+      </div>
+      <div class="grid lg:grid-cols-3 gap-5">
+        <D2dPaste class="lg:col-span-2" :recipient="paste.device" @change-recipient="selectRecipient = true" />
+        <D2dSelectDevice v-model="paste.device" v-if="selectRecipient" />
       </div>
     </section>
   </ClientOnly>
