@@ -1,6 +1,7 @@
 import crypto from "crypto";
 
 import { customAlphabet } from "nanoid";
+
 import type { PrismaClient } from "~~/generated/prisma";
 
 const algorithm = "aes-256-cbc";
@@ -53,18 +54,20 @@ export const checkIfDevicePinIsAvailable = async (
 export const encrypt = (content: string) => {
   const cipher = crypto.createCipheriv(algorithm, key, iv);
 
-  let encrypted = cipher.update(content, "utf-8", "hex")
-  encrypted += cipher.final("hex")
+  let encrypted = cipher.update(content, "utf-8", "hex");
+  encrypted += cipher.final("hex");
 
-  return encrypted
+  return encrypted;
 };
-
 
 export const decrypt = (content: string) => {
   const decipher = crypto.createDecipheriv(algorithm, key, iv);
-  
-  let decrypted = decipher.update(content, "hex", "utf-8");
-  decrypted += decipher.final("utf-8")
 
-  return decrypted
-}
+  let decrypted = decipher.update(content, "hex", "utf-8");
+  decrypted += decipher.final("utf-8");
+
+  return decrypted;
+};
+
+
+

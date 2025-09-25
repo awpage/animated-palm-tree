@@ -1,37 +1,45 @@
 <script lang="ts" setup>
 import notify from '~/components/notify'
+import useClientStorage from '~/composables/storage';
 
 const { recipient } = defineProps<{ recipient: string | null }>()
 const emit = defineEmits(["change-recipient"])
 
-const pinError = ref(false)
+const store = useClientStorage()
+
 const err = ref<string | undefined>(undefined)
 const loading = ref(false)
-const isMobile = ref(false)
 const form = reactive({
   content: "",
-  id: "",
-  deleteOnSeen: false
 })
+
+const device = computed(() => store?.deviceID.value)
 
 async function submitForm() {
   err.value = undefined
   if (form.content.length === 0) {
-    err.value = "Please add a content."
+    notify.show({ type: "error", message: "Please add some content" })
+    return
+  }
+
+  if (!recipient) {
+    notify.show({ type: "error", message: "Please select the recieving device" })
     return
   }
 
   loading.value = true
   try {
-    await $fetch("/api/entry", { method: "post", body: JSON.stringify(form) })
-    await copyToClipboard(false)
+    const {message} = await $fetch("/api/v2/message/send", {
+      method: "post", body: JSON.stringify({
+        content: form.content,
+        recipientId: recipient,
+        senderId: device.value
+    }) })
 
     form.content = ""
-    form.id = ""
-    form.deleteOnSeen = false
+    console.log(message)
 
     // Get new pin for another entry
-    await getPin()
     notify.show({ type: "success", message: "Content added and pin copied to clipboard" })
   } catch (error: any | { message: string }) {
     err.value = error.message.split(":")[1] ?? "An error occurred while saving your content, please try again."
@@ -39,56 +47,6 @@ async function submitForm() {
     loading.value = false
   }
 }
-
-async function copyToClipboard(showMessage = true) {
-  try {
-    await navigator.clipboard.writeText(`Hey, I sent you something. See it here \nhttps://ctrlcv.website/c/${form.id.toLowerCase()}`)
-
-    if (showMessage) {
-      notify.show({ type: "success", message: "Code copied to your clipboard" })
-    }
-  } catch (error) {
-    console.error(error)
-    err.value = "An error occurred while copying the shareable code."
-  }
-}
-
-async function shareId() {
-  try {
-    if (navigator.share) {
-      navigator.share({
-        title: 'Hey, I sent you something.',
-        text: `See it here:\n`,
-        url: `https://ctrlcv.website/c/${form.id.toLowerCase()}`,
-      })
-    }
-
-    notify.show({ type: "error", message: "Cannot share " })
-  } catch (error) {
-    console.error(error)
-    err.value = "Your device does not support sharing"
-  }
-}
-
-async function getPin() {
-  pinError.value = false
-  err.value = undefined
-  try {
-    const { pin } = await $fetch("/api/pin")
-
-    form.id = pin!
-  } catch (error) {
-    console.log(error)
-    pinError.value = true
-    err.value = "Error generating sharable pin, please refresh pin"
-  }
-}
-
-getPin()
-
-onMounted(() => {
-  isMobile.value = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-})
 </script>
 
 <template>

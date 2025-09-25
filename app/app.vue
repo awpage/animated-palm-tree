@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const route = useRoute()
 
-const isHome = computed(() => route.path === "/" || route.path === "/device-to-device")
+const isHome = computed(() => route.path === "/" || route.path === "/v2")
 
 if (import.meta.env.VITE_PROD) {
   useHead({

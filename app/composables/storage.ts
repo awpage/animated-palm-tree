@@ -1,7 +1,8 @@
 const db = ref();
 
 const deviceID = ref();
-const devices = ref([]);
+const devices = ref<any[]>([]);
+const messages = ref<any[]>([])
 
 export default function useClientStorage() {
   if (!import.meta.client) return;
@@ -56,6 +57,30 @@ export default function useClientStorage() {
     );
   };
 
+  const addDeviceToStore = async (newVal: any) => {
+    devices.value = newVal;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(newVal));
+    indexedDB.add({
+      store: STORAGE_KEY,
+      item: { id: STORAGE_KEY, val: JSON.stringify(newVal) },
+    });
+  };
+
+  const findAllMessages = async () => {
+    const indexMessages = ((await indexedDB.find({ store: MESSAGE_KEY, key: MESSAGE_KEY })) as any)?.value
+    messages.value = JSON.parse(localStorage.getItem(MESSAGE_KEY) || indexMessages || [])
+  }
+
+  const addMessageToStore = async (newVal: any) => {
+    messages.value = newVal
+    localStorage.setItem(MESSAGE_KEY, JSON.stringify(newVal));
+
+    indexedDB.add({
+      store: MESSAGE_KEY,
+      item: { id: MESSAGE_KEY, val: JSON.stringify(newVal)}
+    })
+  }
+
   const indexedDB = {
     init: () => {
       return new Promise((resolve, reject) => {
@@ -72,6 +97,7 @@ export default function useClientStorage() {
           db.value = e.target.result;
           db.value.createObjectStore(STORAGE_KEY, { keyPath: "id" });
           db.value.createObjectStore(DEVICE_KEY, { keyPath: "id" });
+          db.value.createObjectStore(MESSAGE_KEY, { keyPath: "id" });
 
           resolve(e.target.result);
         };
@@ -143,6 +169,7 @@ export default function useClientStorage() {
     }
 
     findDevices();
+    findAllMessages();
     log();
   });
 
@@ -157,6 +184,10 @@ export default function useClientStorage() {
   return {
     deviceID,
     devices,
+    messages,
     indexedDB,
+    addDeviceToStore,
+    findAllMessages,
+    addMessageToStore,
   };
 }

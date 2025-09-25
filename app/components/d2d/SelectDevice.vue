@@ -1,34 +1,41 @@
 <script lang="ts" setup>
 import useClientStorage from '~/composables/storage'
 
-
-const { indexedDB } = useClientStorage()
 const store = useClientStorage()
+const { indexedDB, addDeviceToStore } = useClientStorage()
 
 const device = defineModel()
-const devices = computed(() => store?.devices.value || [])
+const emit = defineEmits(["update:modelValue"])
 
 const newDevice = ref()
 const loading = ref(false)
-const allDevices = ref<any[]>(devices.value)
+
+const devices = computed(() => store?.devices.value || [])
 
 function handleInput(evt: InputEvent | any) {
   newDevice.value = evt.target.value.slice(0, 7).toLowerCase()
 }
 
-function setAllDevices() {
-  allDevices.value = [...allDevices.value, { id: newDevice.value, token: "" }]
-  newDevice.value = undefined
-}
+async function setAllDevices() {
+  if (devices.value.includes(newDevice.value.toLowerCase())) {
+    newDevice.value = undefined
+    return
+  }
+  try {
+    await $fetch("/api/v2/connectdevice", { method: 'post', body: JSON.stringify({ recipientId: newDevice.value.toLowerCase(), senderId: store?.deviceID.value }) })
 
-watch(allDevices, (newVal) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(newVal))
-  indexedDB.add({ store: STORAGE_KEY, item: { id: STORAGE_KEY, val: JSON.stringify(newVal) } })
-})
+    addDeviceToStore([...devices.value, newDevice.value.toLowerCase()])
+    emit("update:modelValue", newDevice.value)
+    newDevice.value = undefined
+  } catch (error) {
+    console.log(error)
+  }
+}
 </script>
 
 <template>
-  <section class="p-5">
+  <section
+    class="p-5 max-md:fixed max-md:bg-white max-md:bottom-0 max-md:top-[30vh] max-md:rounded-t-[40px] max-md:shadow-2xl max-md:pt-10">
     <h2 class="text-xl">Add Device</h2>
     <form @submit.prevent="setAllDevices()" class="my-3 grid grid-cols-12 gap-5 items-start">
       <div class="col-span-9">
@@ -57,12 +64,12 @@ watch(allDevices, (newVal) => {
 
     <h2 class="text-xl">Your Devices</h2>
     <div class="font-bold border uppercase flex justify-between border-gray-300 p-2 cursor-pointer"
-      @click="device === item.id ? device = undefined : device = item.id" :class="{ 'bg-gray-300': item.id === device }"
-      v-for="(item, key) in allDevices" :key>
-      {{ item.id }}
+      @click="device === item ? device = undefined : device = item" :class="{ 'bg-gray-300': item === device }"
+      v-for="(item, key) in devices" :key>
+      {{ item }}
 
-      <div class="border p-1 border-gray-300" :class="{ '!border-black': device === item.id }">
-        <div class="h-full w-3" :class="{ 'bg-black': device === item.id }"></div>
+      <div class="border p-1 border-gray-300" :class="{ '!border-black': device === item }">
+        <div class="h-full w-3" :class="{ 'bg-black': device === item }"></div>
       </div>
     </div>
   </section>
