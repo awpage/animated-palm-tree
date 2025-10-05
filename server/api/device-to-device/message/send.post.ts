@@ -3,7 +3,7 @@ export default eventHandler(async (event) => {
   const body = await readBody(event)
 
   try {
-    await prisma.messages.create({
+    const message = await prisma.messages.create({
       data: {
         ...body,
         delivered: false,
@@ -11,8 +11,9 @@ export default eventHandler(async (event) => {
       },
     });
 
-    return { message: "Sent to device" }
+    return { message }
   } catch (error) {
+    console.error(error)
     throw HttpErrors.SERVER({ error })
   }
 })

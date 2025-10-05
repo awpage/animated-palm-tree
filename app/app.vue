@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 const route = useRoute()
 
-const isHome = computed(() => route.path === "/" || route.path === "/v2")
+const isHome = computed(() => route.path === "/" || route.path === "/device-to-device")
+const isProd = import.meta.env.VITE_PROD
 
 if (import.meta.env.VITE_PROD) {
   useHead({
@@ -17,6 +18,16 @@ if (import.meta.env.VITE_PROD) {
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
           gtag('config', '${import.meta.env.VITE_PUBLIC_GTAG_ID}';
+        `
+      },
+      {
+        type: 'text/javascript',
+        innerHTML: `
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-PJ5CFB5W');
         `
       }
     ]
@@ -61,6 +72,10 @@ useHead({
 </script>
 
 <template>
+  <noscript v-if="isProd">
+    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PJ5CFB5W" height="0" width="0"
+      style="display:none;visibility:hidden"></iframe>
+  </noscript>
   <section class="min-h-screen bg-slate-50" aria-labelledby="page-title">
     <nav v-if="!isHome" id="page-title"
       class="p-5 flex justify-between font-semibold text-3xl lg:text-8xl text-slate-400 tracking-tighter text-balance">

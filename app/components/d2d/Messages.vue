@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import useClientStorage from '~/composables/storage';
 
+const emit = defineEmits(["reply"])
+
 const store = useClientStorage()
 
 const openedMessage = ref()
@@ -17,7 +19,8 @@ watch(messages, () => {
 <template>
   <section class="h-[50vh] overflow-auto" ref="container">
     <div class="p-5" v-if="messages.length !== 0">
-      <D2dMessage @open="openedMessage === message.id ? openedMessage = undefined : openedMessage = message.id" :message :is-opened="openedMessage === message.id" v-for="(message, key) in messages" :key />
+      <D2dMessage @reply="($evt) => emit('reply', $evt)" @open="openedMessage === message.id ? openedMessage = undefined : openedMessage = message.id" :message :is-opened="openedMessage === message.id" v-for="(message, key) in messages" :key />
+        <p class="text-center text-gray-400 mt-14 text-xs">end</p>
     </div>
 
     <div class="p-5 h-full flex flex-col gap-5 items-center justify-center" v-else>

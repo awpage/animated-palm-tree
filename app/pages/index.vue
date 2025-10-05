@@ -29,10 +29,6 @@ useHead({
 </script>
 <template>
   <section class="bg-slate-50 h-screen flex gap-5 flex-col justify-between p-5">
-    <nuxt-link to="/v2" class="lg:hidden p-5 border-2 border-black">
-      Close to the recieving device? use the device to device mode instead.
-    </nuxt-link>
-
     <div class="">
       <div class="flex gap-5 items-center justify-between">
         <h1 class="text-3xl lg:text-8xl text-black tracking-tighter text-balance">
@@ -40,7 +36,7 @@ useHead({
         </h1>
 
         <div class="flex gap-5 items-center">
-          <nuxt-link to="/v2" class="hidden lg:block">
+          <nuxt-link to="/device-to-device" class="hidden lg:block">
             <svg class="w-20" fill="#000000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
               xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 478.45 478.451" xml:space="preserve">
               <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -75,6 +71,12 @@ useHead({
           </nuxt-link>
         </div>
 
+      </div>
+
+      <div class="mt-5">
+        <nuxt-link to="/device-to-device" title="device to device sharing" class="block lg:hidden p-5 bg-amber-200">
+          Close to the recieving device? use the device to device mode instead.
+        </nuxt-link>
       </div>
 
       <section class="my-10 h-[60vh] lg:grid lg:grid-cols-5 gap-5">

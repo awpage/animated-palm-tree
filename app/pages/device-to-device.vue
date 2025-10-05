@@ -2,7 +2,7 @@
 import useClientStorage from '~/composables/storage';
 import type { ServerMessage, UserNotification } from '~/types/sse';
 
-const paste = reactive<{ device: null | string, content: string}>({
+const paste = reactive<{ device: null | string, content: string }>({
   device: null,
   content: ''
 })
@@ -20,7 +20,7 @@ const devices = computed(() => store?.devices.value || [])
 const messages = computed(() => store?.messages.value || [])
 
 const startListening = function () {
-  source = new EventSource(`/api/v2/${device.value}/sse`)
+  source = new EventSource(`/api/device-to-device/${device.value}/sse`)
 
   source.onopen = () => {
     sseConnected.value = true
@@ -41,6 +41,7 @@ const startListening = function () {
         }
         break;
       case 'message':
+        notifyUser({ title: `New message from ${message.senderId}`, body: getFirstChars(message.content, 50), callback: () => isRecievingMessages.value = true })
         if (!messages.value.map((mes) => mes.id).includes(message.id)) {
           isRecievingMessages.value = true
           store?.addMessageToStore([message, ...messages.value])
@@ -61,7 +62,7 @@ const startListening = function () {
 
 const updateMessageStatus = function (id: string) {
   console.log({ id })
-  navigator.sendBeacon("/api/v2/update-message", JSON.stringify({ id }))
+  navigator.sendBeacon("/api/device-to-device/update-message", JSON.stringify({ id }))
 }
 
 const notifyUser = function (item: UserNotification) {
@@ -88,6 +89,11 @@ const notifyUser = function (item: UserNotification) {
       }
     })
   }
+}
+
+const replyTo = function (deviceId: string) {
+  isRecievingMessages.value = false
+  paste.device = deviceId
 }
 
 const changeBannerContent = function (content: string) {
@@ -123,12 +129,13 @@ if (import.meta.client) {
 <template>
   <ClientOnly>
     <div class="p-5 bg-orange-100 text-orange-700 text-center font-bold sticky top-0 z-[9]"
-      :class="{ '!bg-green-100 !text-green-700' : sseConnected }">
+      :class="{ '!bg-green-100 !text-green-700': sseConnected }">
       {{ bannerContent }}
     </div>
     <section class="relative flex flex-col gap-5 !h-full">
       <div class="px-5 flex -my-10">
-        <svg class="w-40" :class="{ 'fill-green-500': device }" viewBox="0 0 478.45 478.451" xml:space="preserve">
+        <svg title="This device" class="w-40" :class="{ 'fill-green-500': device }" viewBox="0 0 478.45 478.451"
+          xml:space="preserve">
           <g id="SVGRepo_iconCarrier">
             <g>
               <path
@@ -138,7 +145,8 @@ if (import.meta.client) {
           </g>
         </svg>
 
-        <svg class="-ml-40 w-40 animate-pulse" :class="{ 'fill-green-400 !animate-none': sseConnected }"
+        <svg :title="sseConnected ? 'connected to server' : 'waiting to connect to server'"
+          class="-ml-40 w-40 animate-pulse" :class="{ 'fill-green-400 !animate-none': sseConnected }"
           viewBox="0 0 478.45 478.451" xml:space="preserve">
           <g id="SVGRepo_iconCarrier">
             <g>
@@ -155,8 +163,8 @@ if (import.meta.client) {
           </g>
         </svg>
 
-        <svg class="-ml-20 w-40" :class="{ 'fill-green-700' : paste.device }" viewBox="0 0 478.45 478.451"
-          xml:space="preserve">
+        <svg title="Reciever" @click="selectRecipient = true" class="-ml-20 w-40 cursor-pointer"
+          :class="{ 'fill-green-700': paste.device }" viewBox="0 0 478.45 478.451" xml:space="preserve">
           <g id="SVGRepo_iconCarrier">
             <g>
               <path
@@ -176,20 +184,20 @@ if (import.meta.client) {
             <div class="font-bold px-5 py-3 flex justify-between items-center cursor-pointer"
               :class="{ 'border-b border-gray-300': isRecievingMessages }"
               @click="isRecievingMessages = !isRecievingMessages">
-              Messages
+              All Messages
               <span class="inline-block py-.5 px-2 bg-black text-white">
                 {{ messages.length }}
               </span>
             </div>
             <div class="pb-5" v-if="isRecievingMessages">
-              <D2dMessages />
+              <D2dMessages @reply="replyTo" />
             </div>
           </div>
           <div class="border border-gray-300" :class="{ 'bg-gray-50': !isRecievingMessages }">
             <div class="font-bold px-5 py-3 flex justify-between items-center cursor-pointer"
               :class="{ 'border-b border-gray-300': !isRecievingMessages }"
               @click="isRecievingMessages = !isRecievingMessages">
-              Paste
+              Send New Message
             </div>
             <D2dPaste :recipient="paste.device" @change-recipient="selectRecipient = true"
               v-if="!isRecievingMessages" />

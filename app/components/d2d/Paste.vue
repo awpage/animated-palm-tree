@@ -29,7 +29,7 @@ async function submitForm() {
 
   loading.value = true
   try {
-    const {message} = await $fetch("/api/v2/message/send", {
+    const { message } = await $fetch("/api/device-to-device/message/send", {
       method: "post", body: JSON.stringify({
         content: form.content,
         recipientId: recipient,
@@ -37,10 +37,10 @@ async function submitForm() {
     }) })
 
     form.content = ""
+    store?.addMessageToStore([ message, ...store.messages.value ])
     console.log(message)
 
-    // Get new pin for another entry
-    notify.show({ type: "success", message: "Content added and pin copied to clipboard" })
+    notify.show({ type: "success", message: "Message sent!" })
   } catch (error: any | { message: string }) {
     err.value = error.message.split(":")[1] ?? "An error occurred while saving your content, please try again."
   } finally {

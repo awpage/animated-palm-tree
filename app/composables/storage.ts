@@ -16,7 +16,7 @@ export default function useClientStorage() {
 
     try {
       if (!key) {
-        const resp = await useAsyncData(() => $fetch("/api/v2/deviceid"));
+        const resp = await useAsyncData(() => $fetch("/api/device-to-device/deviceid"));
 
         if (resp.data.value) {
           key = resp.data.value.pin!;
@@ -29,16 +29,11 @@ export default function useClientStorage() {
           log();
         }
 
-        const { error } = await useAsyncData(() =>
-          $fetch("/api/v2/deviceid", {
+        await 
+          $fetch("/api/device-to-device/deviceid", {
             method: "POST",
             body: { id: key, token: key },
           })
-        );
-
-        if (error.value) {
-          throw error.value;
-        }
       }
 
       deviceID.value = key;

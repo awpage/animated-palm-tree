@@ -2,7 +2,7 @@
 import useClientStorage from '~/composables/storage'
 
 const store = useClientStorage()
-const { indexedDB, addDeviceToStore } = useClientStorage()
+const { addDeviceToStore } = useClientStorage()
 
 const device = defineModel()
 const emit = defineEmits(["update:modelValue"])
@@ -22,7 +22,7 @@ async function setAllDevices() {
     return
   }
   try {
-    await $fetch("/api/v2/connectdevice", { method: 'post', body: JSON.stringify({ recipientId: newDevice.value.toLowerCase(), senderId: store?.deviceID.value }) })
+    await $fetch("/api/device-to-device/connectdevice", { method: 'post', body: JSON.stringify({ recipientId: newDevice.value.toLowerCase(), senderId: store?.deviceID.value }) })
 
     addDeviceToStore([...devices.value, newDevice.value.toLowerCase()])
     emit("update:modelValue", newDevice.value)
