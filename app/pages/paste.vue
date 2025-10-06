@@ -11,6 +11,8 @@ const form = reactive({
   deleteOnSeen: false
 })
 
+const { gtag } = useGtag()
+
 async function submitForm() {
   err.value = undefined
   if (form.content.length === 0) {
@@ -22,6 +24,8 @@ async function submitForm() {
   try {
     await $fetch("/api/entry", { method: "post", body: JSON.stringify(form) })
     await copyToClipboard(false)
+
+    gtag("event", "add_content")
 
     form.content = ""
     form.id = ""

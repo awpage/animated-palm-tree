@@ -45,5 +45,16 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ["@nuxt/eslint", "@nuxt/fonts", "@nuxt/icon", "@nuxt/image"],
+  gtag: {
+    enabled: Boolean(process.env.VITE_PROD),
+    id: process.env.VITE_PUBLIC_GTAG_ID,
+  },
+
+  modules: [
+    "@nuxt/eslint",
+    "@nuxt/fonts",
+    "@nuxt/icon",
+    "@nuxt/image",
+    "nuxt-gtag",
+  ],
 });

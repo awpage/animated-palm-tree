@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import Copy from '../copy.vue';
+
+definePageMeta({
+  name: "url-share"
+})
 </script>
 
 <template>
