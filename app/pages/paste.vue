@@ -191,5 +191,4 @@ useHead({
       </div>
     </form>
   </section>
-
 </template>

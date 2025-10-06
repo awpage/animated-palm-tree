@@ -39,6 +39,11 @@ export default defineNuxtConfig({
       ],
     },
   },
+  nitro: {
+    experimental: {
+      websocket: true
+    },
+  },
 
   gtag: {
     enabled: Boolean(process.env.VITE_PROD),
