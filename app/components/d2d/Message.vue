@@ -1,12 +1,17 @@
 <script lang="ts" setup>
 import type { ServerMessage } from '~/types/sse';
 import notify from '~/components/notify'
+import useClientStorage from '~/composables/storage';
 
 const emit = defineEmits(["open", "reply"])
 const { message, isOpened = false } = defineProps<{
   message: ServerMessage,
   isOpened: boolean
 }>()
+
+const store = useClientStorage()
+
+const deviceId = computed(() => store?.deviceID.value)
 
 async function copyToClipboard() {
   try {
@@ -20,9 +25,16 @@ async function copyToClipboard() {
 </script>
 
 <template>
-  <section class="px-5 bg-gray-100 mb-2 !overflow-hidden" :class="{ 'border border-gray-400': isOpened }">
+  <section class="px-5 bg-gray-100 mb-2 !overflow-hidden"
+    :class="{ 'border border-gray-400': isOpened, '!bg-gray-200/70': message.senderId === deviceId }">
     <div class="flex justify-between items-center py-3 text-sm border-b border-gray-200 text-gray-600">
-      <span>From: {{ message.senderId?.toLocaleUpperCase() }}</span>
+      <span>
+        {{ message.senderId === deviceId ? "To" : "From" }}:
+        <span class="text-black">
+          {{ message.senderId === deviceId ? message.recipientId?.toLocaleUpperCase() :
+            message.senderId?.toLocaleUpperCase() }}
+        </span>
+      </span>
 
       <div class="flex gap-5 items-center">
         <button @click="emit('reply', message.senderId)"

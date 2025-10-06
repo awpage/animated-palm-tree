@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import useClientStorage from '~/composables/storage';
+import type { ServerMessage } from '~/types/sse';
 
 const emit = defineEmits(["reply"])
-
-const store = useClientStorage()
 
 const openedMessage = ref()
 const container = ref<HTMLElement | null>(null)
 
-const messages = computed(() => store?.messages.value || [])
+const messages: ServerMessage[] = inject("messages")!
 
-watch(messages, () => {
+watch(messages!, () => {
   if (container.value) {
     container.value.scrollTop = 0
   }

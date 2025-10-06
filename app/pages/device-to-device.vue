@@ -12,53 +12,12 @@ let source = null
 
 const selectRecipient = ref(false)
 const sseConnected = ref(false)
-const bannerContent = ref("Please wait...")
+const bannerContent = ref("Connecting...")
 const isRecievingMessages = ref(false) // used to hide the paste dialog
 
 const device = computed(() => store?.deviceID.value)
 const devices = computed(() => store?.devices.value || [])
 const messages = computed(() => store?.messages.value || [])
-
-const startListening = function () {
-  source = new EventSource(`/api/device-to-device/${device.value}/sse`)
-
-  source.onopen = () => {
-    sseConnected.value = true
-  }
-
-  source.onmessage = (event) => {
-    const { message } = JSON.parse(event.data) as { time: string, message: ServerMessage }
-
-    switch (message.type) {
-      case 'connected':
-        if (message.recipientId === device.value) {
-          if (!devices.value.includes(message.senderId)) {
-            store?.addDeviceToStore([message.senderId, ...devices.value])
-          }
-
-          paste.device = message.senderId as string
-          changeBannerContent(`New device [${message.senderId?.toLocaleUpperCase()}] connected`)
-        }
-        break;
-      case 'message':
-        notifyUser({ title: `New message from ${message.senderId}`, body: getFirstChars(message.content, 50), callback: () => isRecievingMessages.value = true })
-        if (!messages.value.map((mes) => mes.id).includes(message.id)) {
-          isRecievingMessages.value = true
-          store?.addMessageToStore([message, ...messages.value])
-        }
-        break
-
-      case 'ping':
-        // console.log("ping", message)
-        break
-
-      case "welcome":
-        console.warn("welcome", message)
-      default:
-        break;
-    }
-  }
-}
 
 const updateMessageStatus = function (id: string) {
   console.log({ id })
@@ -104,6 +63,51 @@ const changeBannerContent = function (content: string) {
   }, 9000);
 }
 
+const startListening = function () {
+  source = new EventSource(`/api/device-to-device/${device.value}/sse`)
+
+  source.onopen = () => {
+    sseConnected.value = true
+  }
+
+  source.onmessage = (event) => {
+    const { message } = JSON.parse(event.data) as { time: string, message: ServerMessage }
+
+    switch (message.type) {
+      case 'connected':
+        if (message.recipientId === device.value) {
+          if (!devices.value.includes(message.senderId)) {
+            store?.addDeviceToStore([message.senderId, ...devices.value])
+          }
+
+          paste.device = message.senderId as string
+          changeBannerContent(`New device [${message.senderId?.toLocaleUpperCase()}] connected`)
+        }
+        break;
+      case 'message':
+        notifyUser({ title: `New message from ${message.senderId}`, body: getFirstChars(message.content, 50), callback: () => isRecievingMessages.value = true })
+        if (!messages.value.map((mes) => mes.id).includes(message.id)) {
+          isRecievingMessages.value = true
+          store?.addMessageToStore([message, ...messages.value])
+        }
+        break
+
+      case 'ping':
+        // console.log("ping", message)
+        break
+
+      case "welcome":
+        console.warn("welcome", message)
+      default:
+        break;
+    }
+  }
+
+  source.onerror = () => {
+    sseConnected.value = false
+  }
+}
+
 watch(device, (newVal) => {
   if (newVal) {
     startListening()
@@ -119,12 +123,23 @@ watch(sseConnected, (newVal) => {
   bannerContent.value = "Connecting to server"
 })
 
+provide("deviceId", device)
+provide("messages", messages)
+
 if (import.meta.client) {
   document.addEventListener("visibilitychange", () => {
     console.log(document.visibilityState)
     // Send a beacon to the backend to stop sending when user is not in the page.
   })
 }
+
+useHead({
+  title: "Device to Device",
+  meta: [{
+    content: "Send messages across different devices faster and better",
+    name: "description"
+  }]
+})
 </script>
 <template>
   <ClientOnly>
@@ -146,7 +161,7 @@ if (import.meta.client) {
         </svg>
 
         <svg :title="sseConnected ? 'connected to server' : 'waiting to connect to server'"
-          class="-ml-40 w-40 animate-pulse" :class="{ 'fill-green-400 !animate-none': sseConnected }"
+          class="-ml-40 w-40 animate-pulse fill-red-500" :class="{ '!fill-green-400 !animate-none': sseConnected }"
           viewBox="0 0 478.45 478.451" xml:space="preserve">
           <g id="SVGRepo_iconCarrier">
             <g>
@@ -207,7 +222,27 @@ if (import.meta.client) {
           <D2dSelectDevice v-model="paste.device"
             @update:model-value="(val) => { paste.device = val; selectRecipient = false }" v-if="selectRecipient" />
           <div class="p-5 hidden min-md:block" v-else>
-            We can add some FAQ here?
+            <h1 class="text-2xl">How to use</h1>
+            <p class="text-gray-700">
+              Thank you for trying out Device-to-Device content sharing.<br /><br /> To get started, share your <b
+                class="text-black">Device ID</b> and
+              input it in the other device. You can add a new device by clicking on <b
+                class="text-blue-500 cursor-pointer underline" @click="selectRecipient = true">Select
+                device</b> and adding the Device ID of the other device you want to establish connection
+              with.<br /><br /> Once done, you can enjoy sharing textual content across devices and improve your
+              productivity.
+            </p>
+
+            <h1 class="text-2xl mt-5">Usecases</h1>
+            <ul class="text-gray-700 list-disc list-inside">
+              <li>Sharing text instantaneously across two devices</li>
+              <li>Anything else? Please let me know, I'd be happy to share how you're using this to other users.</li>
+            </ul>
+
+            <div class="mt-5">
+              Loving this or you have a problem? <a href="https://twitter.com/booluw" class="text-red-500 underline"
+                target="_blank">Send me a DM</a>.
+            </div>
           </div>
         </div>
       </div>

@@ -13,7 +13,7 @@ const form = reactive({
   content: "",
 })
 
-const device = computed(() => store?.deviceID.value)
+const device = inject("deviceId")
 
 async function submitForm() {
   err.value = undefined
@@ -38,7 +38,6 @@ async function submitForm() {
 
     form.content = ""
     store?.addMessageToStore([ message, ...store.messages.value ])
-    console.log(message)
 
     notify.show({ type: "success", message: "Message sent!" })
   } catch (error: any | { message: string }) {

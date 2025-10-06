@@ -29,11 +29,14 @@ export default function useClientStorage() {
           log();
         }
 
-        await 
-          $fetch("/api/device-to-device/deviceid", {
-            method: "POST",
-            body: { id: key, token: key },
-          })
+        // This sends silently, because it seems it was failing
+        navigator.sendBeacon(
+          "/api/device-to-device/deviceid",
+          JSON.stringify({ id: key, token: key })
+        );
+      } else {
+        const { message } = await $fetch("/api/device-to-device/checkdevice", { method: "POST", body: { id: key } })
+        console.log(message)
       }
 
       deviceID.value = key;

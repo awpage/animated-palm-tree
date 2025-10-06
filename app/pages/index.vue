@@ -74,8 +74,8 @@ useHead({
       </div>
 
       <div class="mt-5">
-        <nuxt-link to="/device-to-device" title="device to device sharing" class="block lg:hidden p-5 bg-amber-200">
-          Close to the recieving device? use the device to device mode instead.
+        <nuxt-link to="/device-to-device" title="device to device sharing" class="block p-5 bg-amber-200">
+          🚀 Close to the recieving device? Use the device to device mode instead.
         </nuxt-link>
       </div>
 
@@ -94,7 +94,7 @@ useHead({
             </div>
             <nuxt-link to="/copy">Copy content with a password here</nuxt-link>
           </div>
-          <div class="col-span-2 lg:col-span-3 row-span-1 bg-black text-white p-5 flex flex-col justify-between">
+          <div class="col-span-3 row-span-1 max-lg:row-span-2 bg-black text-white p-5 flex flex-col justify-between">
             <div class="">
               <div class="flex items-end">
                 <h2 class="font-bold text-4xl">Paste</h2>
@@ -109,7 +109,20 @@ useHead({
 
             <nuxt-link to="/paste">Paste and Share here</nuxt-link>
           </div>
-          <div class="col-span-1 lg:col-span-2 row-span-1 bg-black text-white">
+          <div
+            class="max-lg:hidden col-span-3 row-span-1 bg-gray-200 border-2 text-black p-5 flex flex-col justify-between">
+            <div class="">
+              <div class="flex items-end">
+                <h2 class="font-bold text-3xl">Device To Device</h2>
+              </div>
+
+              <p class="mt-3 opacity-85 font-[100]">
+                Fastest way to share textual contents between two devices. Connect via Device ID, send content super
+                fast!
+              </p>
+            </div>
+
+            <nuxt-link to="/device-to-device" class="font-bold">Try Device to device</nuxt-link>
           </div>
         </div>
         <div class="flex lg:col-span-2 bg-transparent text-black flex-col justify-end items-end">

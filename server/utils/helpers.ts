@@ -44,6 +44,8 @@ export const checkIfDevicePinIsAvailable = async (
       },
     });
 
+    console.log(isAlreadyTaken);
+
     return !isAlreadyTaken;
   } catch (error) {
     console.log(error);
