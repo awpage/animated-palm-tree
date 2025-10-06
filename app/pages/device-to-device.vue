@@ -10,6 +10,8 @@ const paste = reactive<{ device: null | string, content: string }>({
 const store = useClientStorage()
 let source = null
 
+const { gtag } = useGtag()
+
 const selectRecipient = ref(false)
 const sseConnected = ref(false)
 const bannerContent = ref("Connecting...")
@@ -53,6 +55,7 @@ const notifyUser = function (item: UserNotification) {
 const replyTo = function (deviceId: string) {
   isRecievingMessages.value = false
   paste.device = deviceId
+  gtag("event", "reply_to")
 }
 
 const changeBannerContent = function (content: string) {
@@ -90,6 +93,7 @@ const startListening = function () {
           isRecievingMessages.value = true
           store?.addMessageToStore([message, ...messages.value])
         }
+        gtag("event", "message_recieved")
         break
 
       case 'ping':

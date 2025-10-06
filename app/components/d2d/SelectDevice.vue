@@ -12,6 +12,8 @@ const loading = ref(false)
 
 const devices = computed(() => store?.devices.value || [])
 
+const { gtag } = useGtag()
+
 function handleInput(evt: InputEvent | any) {
   newDevice.value = evt.target.value.slice(0, 7).toLowerCase()
 }
@@ -27,6 +29,7 @@ async function setAllDevices() {
     addDeviceToStore([...devices.value, newDevice.value.toLowerCase()])
     emit("update:modelValue", newDevice.value)
     newDevice.value = undefined
+    gtag("event", "add_device")
   } catch (error) {
     console.log(error)
   }
