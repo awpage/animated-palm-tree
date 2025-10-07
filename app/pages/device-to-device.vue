@@ -88,12 +88,12 @@ const startListening = function () {
         }
         break;
       case 'message':
-        notifyUser({ title: `New message from ${message.senderId}`, body: getFirstChars(message.content, 50), callback: () => isRecievingMessages.value = true })
         if (!messages.value.map((mes) => mes.id).includes(message.id)) {
           isRecievingMessages.value = true
           store?.addMessageToStore([message, ...messages.value])
         }
         gtag("event", "message_recieved")
+        // notifyUser({ title: `New message from ${message.senderId}`, body: getFirstChars(message.content, 50), callback: () => isRecievingMessages.value = true })
         break
 
       case 'ping':
