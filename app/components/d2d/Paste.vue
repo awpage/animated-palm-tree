@@ -13,6 +13,7 @@ const form = reactive({
   content: "",
 })
 
+const { gtag } = useGtag()
 const device = inject("deviceId")
 
 async function submitForm() {
@@ -37,9 +38,11 @@ async function submitForm() {
     }) })
 
     form.content = ""
-    store?.addMessageToStore([ message, ...store.messages.value ])
+    store?.addMessageToStore([message, ...store.messages.value])
+    
 
     notify.show({ type: "success", message: "Message sent!" })
+    gtag("event", "message_sent")
   } catch (error: any | { message: string }) {
     err.value = error.message.split(":")[1] ?? "An error occurred while saving your content, please try again."
   } finally {
